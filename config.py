@@ -9,3 +9,4 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY') or 'asnfkasf'
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
     SQLALCHEMY_TRACK_NOTIFICAITONS = False
+    FLASK_DEBUG=os.getenv('FLASK_DEBUG')

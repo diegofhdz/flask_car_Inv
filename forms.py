@@ -1,18 +1,10 @@
 from flask_wtf import FlaskForm 
+from flask import flash
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, ValidationError
-import zxcvbn as zxc
-
+from wtforms.validators import DataRequired, Email
 
 class UserLoginForm(FlaskForm):
-
-    def check_password(form, field):
-        result = zxc.password_strength(field.data)
-        if result < 3:
-            raise ValidationError("Weak Password, try a stronger password")
-        else:
-            return True
-
+    # Other WTForms Validators
     email = StringField('Email', validators = [DataRequired(), Email()])
-    password = PasswordField('Password', validators = [DataRequired(), check_password])
+    password = PasswordField('Password', validators = [DataRequired()])
     submit_button = SubmitField()

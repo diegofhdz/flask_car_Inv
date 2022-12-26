@@ -7,10 +7,52 @@ from flask_login import login_user, logout_user, LoginManager, current_user, log
 
 auth = Blueprint('auth', __name__, template_folder='auth_templates')
 
-@auth.route('/signin')
-def sign_in():
-    return render_template('sign_in.html')
+@auth.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = UserLoginForm()
 
-@auth.route('/signup')
-def sign_up():
-    return render_template('sign_up.html')
+    try:
+        if request.method == 'POST' and form.validate_on_submit():
+            email = form.email.data
+            password = form.password.data
+            print(email, password)
+
+            user = User(email, password=password)
+            db.session.add(user)
+            db.session.commit()
+
+            flash(f"You have successfully registered {email}")
+            return redirect(url_for('site.home'))
+
+    except:
+        raise Exception('Invalid Form data. Try again')
+    return render_template('sign_up.html', form=form)
+
+
+@auth.route('/signin', methods = ['GET', 'POST'])
+def signin():
+    form = UserLoginForm()
+    
+    try:
+        if request.method == 'POST' and form.validate_on_submit():
+            email = form.email.data
+            password = form.password.data
+            print(email,password)
+
+            logged_user = User.query.filter(User.email == email).first()
+            if logged_user and check_password_hash(logged_user.password, password):
+                login_user(logged_user)
+                flash('Succesfull Login', 'auth-success')
+                return redirect(url_for('site.profile'))
+            else:
+                flash('You do not have access to this content.', 'auth-failed')
+                return redirect(url_for('auth.signin'))
+    except:
+        raise Exception('Invalid Form Data: Please Check your Form')
+    return render_template('sign_in.html', form=form)
+
+
+@auth.route('/signout')
+def signout():
+    logout_user()
+    return redirect(url_for('site.home'))
