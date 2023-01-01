@@ -40,14 +40,15 @@ def update_car(current_user_token, id):
     car = Car.query.get(id) 
     car.make = request.json['make']
     car.model = request.json['model']
-    car.year = request.json['year_']
+    car.year_ = request.json['year_']
+    print(car.year_)
     car.user_token = current_user_token.token
 
     db.session.commit()
     response = car_schema.dump(car)
     return jsonify(response)
 
-@api.route('/contacts/<id>', methods = ['DELETE'])
+@api.route('/cars/<id>', methods = ['DELETE'])
 @token_required
 def delete_car(current_user_token, id):
     car = Car.query.get(id)

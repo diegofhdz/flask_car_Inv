@@ -55,11 +55,11 @@ class Car(db.Model):
     id = db.Column(db.String, primary_key=True)
     make = db.Column(db.String(100), nullable=True, default='')
     model = db.Column(db.String(100), nullable=True, default='')
-    year_ = db.Column(db.Integer, nullable=True, default=0)
+    year_ = db.Column(db.Integer, nullable=True, default=1900)
     date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_token = db.Column(db.String, db.ForeignKey('user.token'), nullable=False)
 
-    def __init__(self, user_token, make='', model='', year_=0, id=''):
+    def __init__(self, user_token, make='', model='', year_=1900, id=''):
         self.id = self.set_id()
         self.make = make
         self.model = model
@@ -70,7 +70,7 @@ class Car(db.Model):
         return str(secrets.token_urlsafe())
 
     def __repr__(self):
-        return f"Added {str(self.year)} {self.make} {self.model}"
+        return f"Added {str(self.year_)} {self.make} {self.model}"
 
 class CarSchema(ma.Schema):
     class Meta:
